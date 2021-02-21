@@ -1,14 +1,15 @@
 package conf
 
 import (
-	"github.com/caarlos0/env/v6"
-	"gopkg.in/yaml.v2"
 	"io/ioutil"
 	"log"
 	"os"
 	"path/filepath"
 	"strings"
 	"time"
+
+	"github.com/caarlos0/env/v6"
+	"gopkg.in/yaml.v2"
 )
 
 const configFileName = "restql.yml"
@@ -18,9 +19,13 @@ type requestIDConf struct {
 	Strategy string `yaml:"strategy"`
 }
 
+type compressionConf struct{}
+
 type timeoutConf struct {
 	Duration string `yaml:"duration"`
 }
+
+type cacheConf struct{}
 
 type corsConf struct {
 	AllowOrigin      string `yaml:"allowOrigin" env:"RESTQL_CORS_ALLOW_ORIGIN"`
@@ -60,8 +65,10 @@ type Config struct {
 
 			Middlewares struct {
 				RequestID           *requestIDConf           `yaml:"requestId"`
+				Compression         *compressionConf         `yaml:"compression"`
 				Timeout             *timeoutConf             `yaml:"timeout"`
 				Cors                *corsConf                `yaml:"cors"`
+				Cache               *cacheConf               `yaml:"cache"`
 				RequestCancellation *requestCancellationConf `yaml:"requestCancellation"`
 			} `yaml:"middlewares"`
 		} `yaml:"server"`

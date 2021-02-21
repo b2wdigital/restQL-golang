@@ -2,6 +2,7 @@ package middleware
 
 import (
 	"fmt"
+
 	"github.com/b2wdigital/restQL-golang/v4/internal/platform/conf"
 	"github.com/b2wdigital/restQL-golang/v4/internal/platform/plugins"
 	"github.com/b2wdigital/restQL-golang/v4/pkg/restql"
@@ -61,6 +62,15 @@ func (d *Decorator) fetchEnabled() []Middleware {
 	mws := []Middleware{newRecoverer(d.log), newNativeContext(d.cm), newTransaction(d.pm)}
 
 	mwCfg := d.cfg.HTTP.Server.Middlewares
+	if mwCfg.Cache != nil {
+		cache := newCache(d.log)
+		mws = append(mws, cache)
+	}
+
+	if mwCfg.Compression != nil {
+		mws = append(mws, newCompression())
+	}
+
 	if mwCfg.Timeout != nil {
 		mws = append(mws, newTimeout(mwCfg.Timeout.Duration, d.log))
 	}
